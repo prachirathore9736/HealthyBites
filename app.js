@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
@@ -5,8 +7,6 @@ import UserRouter from "./routes/user.route.js";
 import AdminRouter from "./routes/admin.route.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
-dotenv.config();
 
 const app = express();
 app.use(cors({
@@ -22,9 +22,9 @@ mongoose.connect(process.env.MONGO_ATLAS_URL)
         console.log("MongoDB Atlas Connected");
         app.use("/admin", AdminRouter);
         app.use("/user", UserRouter);
-
-        app.listen(process.env.PORT, () => {
-            console.log(`Server Started at ${process.env.PORT}`);
+        const PORT = 3000;
+        app.listen(PORT, () => {
+            console.log(`Server Started at ${PORT}`);
         });
     })
     .catch(err => {

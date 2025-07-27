@@ -2,7 +2,7 @@ import express from "express";
 import { getUserProfile, signUpAction, signInAction, verifyOTP, resendOTP, forgotPasswordAction, logoutAction, setPreferences, updateUserPreferences, googleSignIn, generateMealPlan } from "../controller/user.controller.js";
 import { body } from "express-validator";
 import { authenticate } from "../middlewares/auth.js";
-import { googleAuth } from "../controller/user.controller.js";
+// import { googleAuth } from "../controller/user.controller.js";
 
 const router = express.Router();
 
@@ -22,7 +22,7 @@ router.post("/logout", authenticate, logoutAction);
 router.post('/setPreferences', authenticate, setPreferences);
 router.post("/profile", authenticate, updateUserPreferences);
 router.get("/profile", authenticate, getUserProfile);
-router.post('/google-auth', googleAuth);
+// router.post('/google-auth', googleAuth);
 router.post("/google-login", googleSignIn);
 router.get("/generate-meal-plan", authenticate, generateMealPlan);
 

@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 import { Meal } from "../model/meal.model.js";
 import { OAuth2Client } from "google-auth-library";
-import admin from "../middlewares/firebaseAdmin.js";
+// import admin from "../middlewares/firebaseAdmin.js";
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 dotenv.config();
 
@@ -25,63 +25,63 @@ const generateToken = (user) => {
   );
 };
 
-export const googleAuth = async (req, res) => {
-  try {
-    const { token } = req.body;
-    if (!token) return res.status(400).json({ error: "Token is required" });
+// export const googleAuth = async (req, res) => {
+//   try {
+//     const { token } = req.body;
+//     if (!token) return res.status(400).json({ error: "Token is required" });
 
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const { email, name, picture, uid } = decodedToken;
+//     const decodedToken = await admin.auth().verifyIdToken(token);
+//     const { email, name, picture, uid } = decodedToken;
 
-    let user = await User.findOne({ email });
+//     let user = await User.findOne({ email });
 
-    if (!user) {
-      user = await User.create({
-        username: name || "Google User",
-        email,
-        googleId: uid,
-        avatar: picture,
-        password: "googleuser",
-        contact: 0,
-        verified: true,
-        isLoggedIn: true,
-        profileComplete: false,
-        role: "user"
-      });
-    } else {
-      user.isLoggedIn = true;
-      await user.save();
-    }
+//     if (!user) {
+//       user = await User.create({
+//         username: name || "Google User",
+//         email,
+//         googleId: uid,
+//         avatar: picture,
+//         password: "googleuser",
+//         contact: 0,
+//         verified: true,
+//         isLoggedIn: true,
+//         profileComplete: false,
+//         role: "user"
+//       });
+//     } else {
+//       user.isLoggedIn = true;
+//       await user.save();
+//     }
 
-    const authToken = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role, profileComplete: user.profileComplete },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+//     const authToken = jwt.sign(
+//       { userId: user._id, email: user.email, role: user.role, profileComplete: user.profileComplete },
+//       process.env.JWT_SECRET,
+//       { expiresIn: "7d" }
+//     );
 
-    res.cookie("jwt", authToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+//     res.cookie("jwt", authToken, {
+//       httpOnly: true,
+//       secure: process.env.NODE_ENV === "production",
+//       sameSite: "strict",
+//       maxAge: 7 * 24 * 60 * 60 * 1000
+//     });
 
-    res.status(200).json({
-      message: `Welcome ${user.username}`,
-      token: authToken,
-      user: {
-        email: user.email,
-        username: user.username,
-        role: user.role
-      },
-      profileComplete: user.profileComplete
-    });
+//     res.status(200).json({
+//       message: `Welcome ${user.username}`,
+//       token: authToken,
+//       user: {
+//         email: user.email,
+//         username: user.username,
+//         role: user.role
+//       },
+//       profileComplete: user.profileComplete
+//     });
 
-  } catch (error) {
-    console.error("Google Sign-In Error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+//   } catch (error) {
+//     console.error("Google Sign-In Error:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
 
 export const checkProfileComplete = async (req, res, next) => {
   try {
