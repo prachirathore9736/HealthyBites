@@ -20,7 +20,7 @@ router.post('/resend-otp', resendOTP);
 router.post('/forgot-password', forgotPasswordAction);
 router.post("/logout", authenticate, logoutAction);
 router.post('/setPreferences', authenticate, setPreferences);
-router.post("/profile", authenticate, updateUserPreferences);
+router.post("/update-profile", authenticate, updateUserPreferences);
 router.get("/profile", authenticate, getUserProfile);
 // router.post('/google-auth', googleAuth);
 router.post("/google-login", googleSignIn);
