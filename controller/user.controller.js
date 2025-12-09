@@ -227,22 +227,47 @@ export const signUpAction = async (request, response, next) => {
     const expiry = Date.now() + 5 * 60 * 1000;
     otpStore.set(email, { otp, expiry, attempts: 0 });
 
-    const emailStatus = await sendEmailWithOTP(email, otp);
-    if (!emailStatus) {
-  console.log("Error: OTP email sending failed.");
-  return response.status(500).json({ message: "Failed to send OTP" });
-}
+//     const emailStatus = await sendEmailWithOTP(email, otp);
+//     if (!emailStatus) {
+//   console.log("Error: OTP email sending failed.");
+//   return response.status(500).json({ message: "Failed to send OTP" });
+// }
+
+//     const userExists = await User.findOne({ email });
+// if (userExists) {
+//   return response.status(400).json({ error: "User already exists" });
+// }
+// const result = emailStatus && await User.create(request.body);
+//  console.log("User Created Successfully: ", result);
+//     return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
+//   } catch (err) {
+//     console.log(err);
+//     return response.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+try {
+      await sendEmailWithOTP(email, otp);
+    } catch (emailError) {
+      console.log("Email Sending Failed:", emailError);
+      return response.status(500).json({ 
+        error: "Failed to send OTP", 
+        details: emailError.message // Frontend ko asli error dikhega
+      });
+    }
 
     const userExists = await User.findOne({ email });
-if (userExists) {
-  return response.status(400).json({ error: "User already exists" });
-}
-const result = emailStatus && await User.create(request.body);
- console.log("User Created Successfully: ", result);
+    if (userExists) {
+      return response.status(400).json({ error: "User already exists" });
+    }
+    
+    const result = await User.create(request.body);
+    console.log("User Created Successfully: ", result);
+    
     return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
+  
   } catch (err) {
-    console.log(err);
-    return response.status(500).json({ error: "Internal Server Error" });
+    console.log("Main Controller Error:", err);
+    return response.status(500).json({ error: "Internal Server Error", details: err.message });
   }
 };
 
@@ -425,10 +450,7 @@ function generateOTP() {
 function sendEmailWithOTP(toEmail, otp) {
   return new Promise((resolve, reject) => {
     let transporter = nodemailer.createTransport({
-      // service: 'gmail',
-      host: "smtp.gmail.com",     // Explicitly use Gmail SMTP
-      port: 465,                  // Port 465 is Secure (SSL) and works better on Cloud
-      secure: true,
+      service: 'gmail',
       auth: {
         user: process.env.GMAIL_ID,
         pass: process.env.GMAIL_PASSWORD
@@ -452,8 +474,9 @@ function sendEmailWithOTP(toEmail, otp) {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log("Error while sending mail: ", error);
-        reject(false);
+        reject(error);
       } else {
+        console.log("Email sent: " + info.response);
         resolve(true);
       }
     });
