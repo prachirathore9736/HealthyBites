@@ -228,12 +228,17 @@ export const signUpAction = async (request, response, next) => {
     otpStore.set(email, { otp, expiry, attempts: 0 });
 
     const emailStatus = await sendEmailWithOTP(email, otp);
+    if (!emailStatus) {
+  console.log("Error: OTP email sending failed.");
+  return response.status(500).json({ message: "Failed to send OTP" });
+}
+
     const userExists = await User.findOne({ email });
 if (userExists) {
   return response.status(400).json({ error: "User already exists" });
 }
 const result = emailStatus && await User.create(request.body);
-
+ console.log("User Created Successfully: ", result);
     return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
   } catch (err) {
     console.log(err);
