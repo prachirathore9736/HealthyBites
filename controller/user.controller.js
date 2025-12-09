@@ -455,7 +455,7 @@ function sendEmailWithOTP(toEmail, otp) {
         user: process.env.GMAIL_ID,
         pass: process.env.GMAIL_PASSWORD
       },
-      connectionTimeout: 100000, // 10 seconds
+      connectionTimeout: 1000000, // 10 seconds
       greetingTimeout: 5000,
       socketTimeout: 10000
     });
