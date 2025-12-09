@@ -228,7 +228,11 @@ export const signUpAction = async (request, response, next) => {
     otpStore.set(email, { otp, expiry, attempts: 0 });
 
     const emailStatus = await sendEmailWithOTP(email, otp);
-    const result = emailStatus && await User.create(request.body);
+    const userExists = await User.findOne({ email });
+if (userExists) {
+  return response.status(400).json({ error: "User already exists" });
+}
+const result = emailStatus && await User.create(request.body);
 
     return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
   } catch (err) {
