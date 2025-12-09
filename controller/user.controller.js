@@ -425,11 +425,17 @@ function generateOTP() {
 function sendEmailWithOTP(toEmail, otp) {
   return new Promise((resolve, reject) => {
     let transporter = nodemailer.createTransport({
-      service: 'gmail',
+      // service: 'gmail',
+      host: "smtp.gmail.com",     // Explicitly use Gmail SMTP
+      port: 465,                  // Port 465 is Secure (SSL) and works better on Cloud
+      secure: true,
       auth: {
         user: process.env.GMAIL_ID,
         pass: process.env.GMAIL_PASSWORD
-      }
+      },
+      connectionTimeout: 10000, // 10 seconds
+      greetingTimeout: 5000,
+      socketTimeout: 10000
     });
 
     let mailOptions = {
