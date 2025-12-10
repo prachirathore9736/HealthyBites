@@ -212,64 +212,127 @@ export const googleSignIn = async (req, res) => {
   }
 };
 
-export const signUpAction = async (request, response, next) => {
+// export const signUpAction = async (request, response, next) => {
+//   try {
+//     const error = validationResult(request);
+//     console.log(error,"error");
+//     console.log(request.body,"request");
+//     if (!error.isEmpty())
+//       return response.status(401).json({ error: "Bad request | Invalid data", errorDetails: error.array() });
+
+//     let { password, email } = request.body;
+//     let saltKey = bcrypt.genSaltSync(12);
+//     password = bcrypt.hashSync(password, saltKey);
+//     request.body.password = password;
+
+//     const otp = generateOTP();
+//     const expiry = Date.now() + 5 * 60 * 1000;
+//     otpStore.set(email, { otp, expiry, attempts: 0 });
+
+// //     const emailStatus = await sendEmailWithOTP(email, otp);
+// //     if (!emailStatus) {
+// //   console.log("Error: OTP email sending failed.");
+// //   return response.status(500).json({ message: "Failed to send OTP" });
+// // }
+
+// //     const userExists = await User.findOne({ email });
+// // if (userExists) {
+// //   return response.status(400).json({ error: "User already exists" });
+// // }
+// // const result = emailStatus && await User.create(request.body);
+// //  console.log("User Created Successfully: ", result);
+// //     return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
+// //   } catch (err) {
+// //     console.log(err);
+// //     return response.status(500).json({ error: "Internal Server Error" });
+// //   }
+// // };
+// try {
+//       await sendEmailWithOTP(email, otp);
+//     } catch (emailError) {
+//       console.log("Email Sending Failed:", emailError);
+//       return response.status(500).json({ 
+//         error: "Failed to send OTP", 
+//         details: emailError.message // Frontend ko asli error dikhega
+//       });
+//     }
+
+//     const userExists = await User.findOne({ email });
+//     if (userExists) {
+//       return response.status(400).json({ error: "User already exists" });
+//     }
+    
+//     const result = await User.create(request.body);
+//     console.log("User Created Successfully: ", result);
+    
+//     return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
+  
+//   } catch (err) {
+//     console.log("Main Controller Error:", err);
+//     return response.status(500).json({ error: "Internal Server Error", details: err.message });
+//   }
+// };
+
+export const signUpAction = async (request, response) => {
   try {
     const error = validationResult(request);
-    if (!error.isEmpty())
-      return response.status(401).json({ error: "Bad request | Invalid data", errorDetails: error.array() });
+    console.log(error, "error");
+    console.log(request.body, "request");
+
+    if (!error.isEmpty()) {
+      return response.status(401).json({
+        error: "Bad request | Invalid data",
+        errorDetails: error.array(),
+      });
+    }
 
     let { password, email } = request.body;
+
+    // Password hashing
     let saltKey = bcrypt.genSaltSync(12);
     password = bcrypt.hashSync(password, saltKey);
     request.body.password = password;
 
+    // OTP generate + store
     const otp = generateOTP();
     const expiry = Date.now() + 5 * 60 * 1000;
     otpStore.set(email, { otp, expiry, attempts: 0 });
 
-//     const emailStatus = await sendEmailWithOTP(email, otp);
-//     if (!emailStatus) {
-//   console.log("Error: OTP email sending failed.");
-//   return response.status(500).json({ message: "Failed to send OTP" });
-// }
-
-//     const userExists = await User.findOne({ email });
-// if (userExists) {
-//   return response.status(400).json({ error: "User already exists" });
-// }
-// const result = emailStatus && await User.create(request.body);
-//  console.log("User Created Successfully: ", result);
-//     return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
-//   } catch (err) {
-//     console.log(err);
-//     return response.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-try {
+    // Email sending
+    try {
       await sendEmailWithOTP(email, otp);
     } catch (emailError) {
       console.log("Email Sending Failed:", emailError);
-      return response.status(500).json({ 
-        error: "Failed to send OTP", 
-        details: emailError.message // Frontend ko asli error dikhega
+      return response.status(500).json({
+        error: "Failed to send OTP",
+        details: emailError.message,
       });
     }
 
+    // Check if user exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return response.status(400).json({ error: "User already exists" });
     }
-    
+
+    // Create new user
     const result = await User.create(request.body);
-    console.log("User Created Successfully: ", result);
-    
-    return response.status(201).json({ message: "OTP sent to email for verification. Verify your Email", userDetail: result });
-  
+    console.log("User Created Successfully:", result);
+
+    return response.status(201).json({
+      message: "OTP sent to email for verification.",
+      userDetail: result,
+    });
+
   } catch (err) {
     console.log("Main Controller Error:", err);
-    return response.status(500).json({ error: "Internal Server Error", details: err.message });
+    return response.status(500).json({
+      error: "Internal Server Error",
+      details: err.message,
+    });
   }
 };
+
 
 export const resendOTP = async (req, res) => {
   try {
