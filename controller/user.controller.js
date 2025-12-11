@@ -512,16 +512,30 @@ function generateOTP() {
 
 function sendEmailWithOTP(toEmail, otp) {
   return new Promise((resolve, reject) => {
+    // let transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: process.env.GMAIL_ID,
+    //     pass: process.env.GMAIL_PASSWORD
+    //   },
+    //   connectionTimeout: 1000000, // 10 seconds
+    //   greetingTimeout: 5000,
+    //   socketTimeout: 10000
+    // });
     let transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
+    service: 'gmail',
+    host: 'smtp.gmail.com', // Explicitly define host
+    port: 587,              // Use Port 587 (TLS) instead of 465
+    secure: false,          // secure: false for port 587
+    auth: {
         user: process.env.GMAIL_ID,
         pass: process.env.GMAIL_PASSWORD
-      },
-      connectionTimeout: 1000000, // 10 seconds
-      greetingTimeout: 5000,
-      socketTimeout: 10000
-    });
+    },
+    // Keep your existing timeouts
+    connectionTimeout: 1000000, 
+    greetingTimeout: 5000,
+    socketTimeout: 10000
+});
 
     let mailOptions = {
       from: process.env.GMAIL_ID,
