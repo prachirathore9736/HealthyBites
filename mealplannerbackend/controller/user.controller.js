@@ -273,11 +273,69 @@ export const googleSignIn = async (req, res) => {
 //   }
 // };
 
+// export const signUpAction = async (request, response) => {
+//   try {
+//     const error = validationResult(request);
+//     console.log(error, "error");
+//     console.log(request.body, "request");
+
+//     if (!error.isEmpty()) {
+//       return response.status(401).json({
+//         error: "Bad request | Invalid data",
+//         errorDetails: error.array(),
+//       });
+//     }
+
+//     let { password, email } = request.body;
+
+//     // Password hashing
+//     let saltKey = bcrypt.genSaltSync(12);
+//     password = bcrypt.hashSync(password, saltKey);
+//     request.body.password = password;
+
+//     // OTP generate + store
+//     const otp = generateOTP();
+//     const expiry = Date.now() + 5 * 60 * 1000;
+//     otpStore.set(email, { otp, expiry, attempts: 0 });
+
+//     // Email sending
+//     try {
+//       await sendEmailWithOTP(email, otp);
+//     } catch (emailError) {
+//       console.log("Email Sending Failed:", emailError);
+//       return response.status(500).json({
+//         error: "Failed to send OTP",
+//         details: emailError.message,
+//       });
+//     }
+
+//     // Check if user exists
+//     const userExists = await User.findOne({ email });
+//     if (userExists) {
+//       return response.status(400).json({ error: "User already exists" });
+//     }
+
+//     // Create new user
+//     const result = await User.create(request.body);
+//     console.log("User Created Successfully:", result);
+
+//     return response.status(201).json({
+//       message: "OTP sent to email for verification.",
+//       userDetail: result,
+//     });
+
+//   } catch (err) {
+//     console.log("Main Controller Error:", err);
+//     return response.status(500).json({
+//       error: "Internal Server Error",
+//       details: err.message,
+//     });
+//   }
+// };
 export const signUpAction = async (request, response) => {
   try {
     const error = validationResult(request);
-    console.log(error, "error");
-    console.log(request.body, "request");
+    console.log("Validation Results:", error.isEmpty() ? "PASSED" : "FAILED");
 
     if (!error.isEmpty()) {
       return response.status(401).json({
@@ -286,53 +344,55 @@ export const signUpAction = async (request, response) => {
       });
     }
 
-    let { password, email } = request.body;
+    let { username, email, password, contact } = request.body;
 
-    // Password hashing
-    let saltKey = bcrypt.genSaltSync(12);
-    password = bcrypt.hashSync(password, saltKey);
-    request.body.password = password;
-
-    // OTP generate + store
-    const otp = generateOTP();
-    const expiry = Date.now() + 5 * 60 * 1000;
-    otpStore.set(email, { otp, expiry, attempts: 0 });
-
-    // Email sending
-    try {
-      await sendEmailWithOTP(email, otp);
-    } catch (emailError) {
-      console.log("Email Sending Failed:", emailError);
-      return response.status(500).json({
-        error: "Failed to send OTP",
-        details: emailError.message,
-      });
-    }
-
-    // Check if user exists
+    // 1. Check if user already exists BEFORE processing credentials or emails
     const userExists = await User.findOne({ email });
     if (userExists) {
       return response.status(400).json({ error: "User already exists" });
     }
 
-    // Create new user
-    const result = await User.create(request.body);
-    console.log("User Created Successfully:", result);
+    // 2. Encrypt Password
+    let saltKey = bcrypt.genSaltSync(12);
+    let hashedPassword = bcrypt.hashSync(password, saltKey);
 
+    // 3. Generate OTP and save metadata to runtime memory state
+    const otp = generateOTP();
+    const expiry = Date.now() + 5 * 60 * 1000;
+    otpStore.set(email, { otp, expiry, attempts: 0 });
+
+    // 4. Create new unverified user record inside MongoDB Atlas database
+    const result = await User.create({
+      username: username.trim(),
+      email: email.toLowerCase().trim(),
+      password: hashedPassword,
+      contact: contact || ""
+    });
+    console.log("User Created in Database Successfully:", result._id);
+
+    // 5. Fire off the OTP Email in a non-blocking background thread
+    sendEmailWithOTP(email.toLowerCase().trim(), otp)
+      .then(() => console.log(`Background OTP email dispatched cleanly to ${email}`))
+      .catch((emailErr) => console.error("Background Email Thread Failure:", emailErr.message));
+
+    // 6. Return response to frontend instantly without waiting for mail ports
     return response.status(201).json({
-      message: "OTP sent to email for verification.",
-      userDetail: result,
+      message: "Registration started. OTP sent to your email for verification.",
+      userDetail: {
+        _id: result._id,
+        username: result.username,
+        email: result.email
+      },
     });
 
   } catch (err) {
-    console.log("Main Controller Error:", err);
+    console.log("Main Sign-Up Controller Fatal Error:", err);
     return response.status(500).json({
       error: "Internal Server Error",
       details: err.message,
     });
   }
 };
-
 
 export const resendOTP = async (req, res) => {
   try {
