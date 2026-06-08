@@ -1,0 +1,59 @@
+.hero {
+  background: #d1fae5;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 50px;
+  color: #065f46;
+}
+
+.hero p {
+  font-size: 20px;
+  color: #333;
+  margin: 15px 0;
+}
+
+.hero button,
+.cta-bottom button {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 25px;
+}
+
+.steps {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.step-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.card {
+  background: #f0fdf4;
+  padding: 20px;
+  border-radius: 12px;
+  width: 200px;
+}
+
+.demo {
+  background: #fefce8;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+footer {
+  background: #e5e7eb;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+}

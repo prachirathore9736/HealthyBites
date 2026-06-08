@@ -1,0 +1,286 @@
+.explore-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hero {
+  background: linear-gradient(135deg, #4CAF50 0%, #81C784 100%);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  overflow: hidden;
+  padding-top: 150px;
+}
+
+.hero::before {
+  content: "";
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 20%);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero p {
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+.about-section {
+  padding: 30px 20px;
+  background-color: white;
+}
+
+.about-section h2 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 60px;
+}
+
+.about-content {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 350px;
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.icon-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #e8f5e9;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-circle span {
+  font-size: 48px;
+}
+
+.about-card h3 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.about-card p {
+  color: #7f8c8d;
+  line-height: 1.6;
+}
+
+.meal-section {
+  padding: 50px 20px;
+  background: #f5f9fc;
+  text-align: center;
+}
+
+.meal-title {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.meal-subtitle {
+  color: #7f8c8d;
+  font-size: 1.2rem;
+  max-width: 600px;
+  margin: 0 auto 50px;
+}
+
+.meal-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto 50px;
+}
+
+.meal-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 300px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.meal-image {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+}
+
+.meal-content {
+  padding: 25px;
+  text-align: left;
+}
+
+.meal-content h2 {
+  color: #4CAF50;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.meal-name {
+  color: #2c3e50;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.meal-info {
+  color: #e74c3c;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.meal-description {
+  color: #7f8c8d;
+  line-height: 1.6;
+}
+
+.next-btn {
+  display: inline-block;
+  padding: 15px 40px;
+  background: #4CAF50;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.next-btn:hover {
+  background: #3d8b40;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+}
+
+.testimonials {
+  padding: 30px 20px;
+  background: white;
+  text-align: center;
+}
+
+.testimonials h2 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 60px;
+}
+
+.testimonial-cards {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.testimonial-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: left;
+}
+
+.testimonial-card::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 80px;
+  color: #e8f5e9;
+  font-family: serif;
+  line-height: 1;
+}
+
+.testimonial-content {
+  z-index: 2;
+}
+
+.testimonial-card p {
+  color: #2c3e50;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.author-location {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .about-section h2,
+  .meal-title,
+  .testimonials h2 {
+    font-size: 2rem;
+  }
+
+  .next-btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+}

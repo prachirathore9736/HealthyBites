@@ -1,0 +1,99 @@
+.about {
+  margin-top: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 80px;
+  gap: 50px;
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  flex-wrap: wrap;
+}
+
+.about-left .chef-img {
+  width: 350px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+}
+
+.about-right {
+  max-width: 650px;
+}
+
+.title {
+  font-size: 32px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 18px;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.highlights h2 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #27ae60;
+}
+
+.highlights ul {
+  list-style: none;
+  padding: 0;
+}
+
+.highlights li {
+  font-size: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.highlights li span {
+  font-size: 20px;
+  margin-right: 10px;
+}
+
+/* 🌐 Responsive Design: Mobile and Tablet */
+@media (max-width: 768px) {
+  .about {
+    flex-direction: column;
+    padding: 30px 20px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-left .chef-img {
+    width: 80%;
+    margin: 0 auto 30px auto;
+  }
+
+  .about-right {
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .description {
+    font-size: 16px;
+  }
+
+  .highlights h2 {
+    font-size: 20px;
+  }
+
+  .highlights li {
+    font-size: 15px;
+    justify-content: center;
+  }
+
+  .highlights li span {
+    margin-right: 8px;
+  }
+}

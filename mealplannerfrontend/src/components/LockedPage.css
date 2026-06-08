@@ -1,0 +1,48 @@
+.lock-page-container {
+  text-align: center;
+  padding: 100px 32px;
+  font-family: Arial, sans-serif;
+  color: #111;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+
+.lock-page-container h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.lock-page-container p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: #444;
+}
+
+.lock-illustration {
+  width: 650px;
+  max-width: 90%;
+  height: auto;
+  margin: 2rem auto;
+  display: block;
+}
+
+
+.signup-btn {
+  background-color: #33c766;
+  border: none;
+  color: white;
+  font-weight: bold;
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+}
