@@ -361,6 +361,12 @@ export const signUpAction = async (request, response) => {
     const expiry = Date.now() + 5 * 60 * 1000;
     otpStore.set(email, { otp, expiry, attempts: 0 });
 
+    console.log("=========================================");
+    console.log(`RESEND TESTING TRACE FOR EMAIL: ${email}`);
+    console.log(`ACTIVE RESEND OTP IS: ${otp}`);
+    console.log("=========================================");
+
+    const emailStatus = await sendEmailWithOTP(email, otp).catch(e => false);
     // 4. Create new unverified user record inside MongoDB Atlas database
     const result = await User.create({
       username: username.trim(),
@@ -405,7 +411,12 @@ export const resendOTP = async (req, res) => {
     const expiry = Date.now() + 5 * 60 * 1000;
     otpStore.set(email, { otp, expiry, attempts: 0 });
 
-    const emailStatus = await sendEmailWithOTP(email, otp);
+    console.log("=========================================");
+    console.log(`RESEND TESTING TRACE FOR EMAIL: ${email}`);
+    console.log(`ACTIVE RESEND OTP IS: ${otp}`);
+    console.log("=========================================");
+
+    const emailStatus = await sendEmailWithOTP(email, otp).catch(e => false);
     if (emailStatus) {
       return res.status(200).json({ message: "OTP resent to your email." });
     } else {
