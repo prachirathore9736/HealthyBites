@@ -512,41 +512,23 @@ function generateOTP() {
 
 function sendEmailWithOTP(toEmail, otp) {
   return new Promise((resolve, reject) => {
-    // let transporter = nodemailer.createTransport({
-    //   service: 'gmail',
-    //   auth: {
-    //     user: process.env.GMAIL_ID,
-    //     pass: process.env.GMAIL_PASSWORD
-    //   },
-    //   connectionTimeout: 1000000, // 10 seconds
-    //   greetingTimeout: 5000,
-    //   socketTimeout: 10000
-    // });
-let transporter = nodemailer.createTransport({
-  
-    host: 'smtp.gmail.com',  // This tells it to use Gmail
-    port: 587,               // This uses the cloud-friendly port
-    secure: false,           // distinct from port 465
-    auth: {
+    // Optimized configurations to bypass cloud firewall restrictions
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
         user: process.env.GMAIL_ID,
         pass: process.env.GMAIL_PASSWORD
-    },
-    tls: {
-        rejectUnauthorized: false // Helps avoid SSL errors on cloud
-    },
-    connectionTimeout: 20000, // Increased to 20 seconds
-    greetingTimeout: 20000,
-    socketTimeout: 20000
-});
+      }
+    });
 
     let mailOptions = {
       from: process.env.GMAIL_ID,
       to: toEmail,
-      subject: 'Account OTP',
+      subject: 'Account OTP - Healthy Bites',
       html: `<h4>Dear user,</h4>
             <p>Your OTP is:</p>
             <h2>${otp}</h2>
-            <p>This OTP is valid for 2 minutes.</p>
+            <p>This OTP is valid for 5 minutes.</p>
             <b>Healthy Bites</b>`
     };
 
@@ -555,7 +537,7 @@ let transporter = nodemailer.createTransport({
         console.log("Error while sending mail: ", error);
         reject(error);
       } else {
-        console.log("Email sent: " + info.response);
+        console.log("Email sent successfully: " + info.response);
         resolve(true);
       }
     });
