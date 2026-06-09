@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyATPSNMVJzC-kv9SFCCZxWPyXbnXAug8qU",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: "automated-meal-planner.firebaseapp.com",
   projectId: "automated-meal-planner",
   storageBucket: "automated-meal-planner.firebasestorage.app",
