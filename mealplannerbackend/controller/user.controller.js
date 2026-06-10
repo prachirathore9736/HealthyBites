@@ -581,38 +581,56 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-function sendEmailWithOTP(toEmail, otp) {
-  return new Promise((resolve, reject) => {
-    // Optimized configurations to bypass cloud firewall restrictions
-    let transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_ID,
-        pass: process.env.GMAIL_PASSWORD
-      }
-    });
+// function sendEmailWithOTP(toEmail, otp) {
+//   return new Promise((resolve, reject) => {
+//     // Optimized configurations to bypass cloud firewall restrictions
+//     let transporter = nodemailer.createTransport({
+//       service: 'gmail',
+//       auth: {
+//         user: process.env.GMAIL_ID,
+//         pass: process.env.GMAIL_PASSWORD
+//       }
+//     });
 
-    let mailOptions = {
-      from: process.env.GMAIL_ID,
+//     let mailOptions = {
+//       from: process.env.GMAIL_ID,
+//       to: toEmail,
+//       subject: 'Account OTP - Healthy Bites',
+//       html: `<h4>Dear user,</h4>
+//             <p>Your OTP is:</p>
+//             <h2>${otp}</h2>
+//             <p>This OTP is valid for 5 minutes.</p>
+//             <b>Healthy Bites</b>`
+//     };
+
+//     transporter.sendMail(mailOptions, (error, info) => {
+//       if (error) {
+//         console.log("Error while sending mail: ", error);
+//         reject(error);
+//       } else {
+//         console.log("Email sent successfully: " + info.response);
+//         resolve(true);
+//       }
+//     });
+//   });
+// }
+import { Resend } from 'resend';
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+async function sendEmailWithOTP(toEmail, otp) {
+  try {
+    await resend.emails.send({
+      from: 'Healthy Bites <onboarding@resend.dev>',
       to: toEmail,
       subject: 'Account OTP - Healthy Bites',
-      html: `<h4>Dear user,</h4>
-            <p>Your OTP is:</p>
-            <h2>${otp}</h2>
-            <p>This OTP is valid for 5 minutes.</p>
-            <b>Healthy Bites</b>`
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Error while sending mail: ", error);
-        reject(error);
-      } else {
-        console.log("Email sent successfully: " + info.response);
-        resolve(true);
-      }
+      html: `<h2>Your OTP is: ${otp}</h2>`
     });
-  });
+    console.log("Email dispatched cleanly via HTTPS API!");
+    return true;
+  } catch (error) {
+    console.error("API Email Error:", error.message);
+    return false;
+  }
 }
 
 export const logoutAction = async (req, res) => {
