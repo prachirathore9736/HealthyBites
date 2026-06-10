@@ -619,16 +619,23 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendEmailWithOTP(toEmail, otp) {
   try {
+    const sandboxTestingRecipient = "prachirathore9376@gmail.com";
+
     await resend.emails.send({
       from: 'Healthy Bites <onboarding@resend.dev>',
-      to: toEmail,
+      to: sandboxTestingRecipient, // Use the verified sandbox variable here
       subject: 'Account OTP - Healthy Bites',
-      html: `<h2>Your OTP is: ${otp}</h2>`
+      html: `<h4>Dear User,</h4>
+             <p>Your production verification code is:</p>
+             <h2>${otp}</h2>
+             <p>This code is valid for 5 minutes.</p>
+             <b>Healthy Bites Team</b>`
     });
-    console.log("Email dispatched cleanly via HTTPS API!");
+    
+    console.log(`Email dispatched cleanly via HTTPS API directly to sandbox anchor: ${sandboxTestingRecipient}`);
     return true;
   } catch (error) {
-    console.error("API Email Error:", error.message);
+    console.error("API Email Error encountered:", error.message);
     return false;
   }
 }
