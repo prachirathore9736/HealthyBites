@@ -622,37 +622,42 @@ function generateOTP() {
 // }
 
 function sendEmailWithOTP(toEmail, otp) {
-  return new Promise((resolve, reject) => {
-    let transporter = nodemailer.createTransport({
-      host: 'smtp-relay.brevo.com', // Brevo's dedicated cloud relay endpoint
-      port: 587,                   // Standard communication port supported by Brevo TLS
-      secure: false,                // false for port 587
-      auth: {
-        user: process.env.GMAIL_ID,       // Will read your Brevo login from Render
-        pass: process.env.GMAIL_PASSWORD  // Will read your Brevo SMTP key from Render
-      }
-    });
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Using standard HTTPS web requests via fetch to bypass Render's mail port block entirely
+      const response = await fetch("https://api.brevo.com/v1/smtp/email", {
+        method: "POST",
+        headers: {
+          "accept": "application/json",
+          "api-key": process.env.GMAIL_PASSWORD, // Reads your Brevo API key from Render settings
+          "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          sender: { name: "Healthy Bites", email: "prachirathore9736@gmail.com" },
+          to: [{ email: toEmail.toLowerCase().trim() }],
+          subject: "Account Verification OTP - Healthy Bites",
+          htmlContent: `<h4>Dear User,</h4>
+                        <p>Your production account verification code is:</p>
+                        <h2 style="color: #4CAF50; font-size: 28px; letter-spacing: 2px;">${otp}</h2>
+                        <p>This OTP is valid for 5 minutes.</p>
+                        <br />
+                        <b>Healthy Bites Team</b>`
+        })
+      });
 
-    let mailOptions = {
-      from: `"Healthy Bites" <prachirathore9376@gmail.com>`, // Your sender name identity
-      to: toEmail.toLowerCase().trim(),                       // Dynamic recipient
-      subject: 'Account Verification OTP - Healthy Bites',
-      html: `<h4>Dear User,</h4>
-            <p>Your account verification code is:</p>
-            <h2 style="color: #4CAF50; font-size: 28px;">${otp}</h2>
-            <p>This code is valid for 5 minutes.</p>
-            <b>Healthy Bites Team</b>`
-    };
+      const data = await response.json();
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Nodemailer transport error:", error.message);
-        reject(error);
-      } else {
-        console.log("Email successfully processed via Brevo relay: " + info.response);
+      if (response.ok) {
+        console.log("Email pushed cleanly through HTTP API tunnel! Message ID:", data.messageId);
         resolve(true);
+      } else {
+        console.error("Brevo API Refusal Details:", data);
+        reject(new Error(data.message || "API dispatch failed"));
       }
-    });
+    } catch (error) {
+      console.error("Network Fetch Crash Details:", error.message);
+      reject(error);
+    }
   });
 }
 
