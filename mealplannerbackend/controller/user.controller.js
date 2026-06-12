@@ -634,7 +634,7 @@ function sendEmailWithOTP(toEmail, otp) {
           "content-type": "application/json"
         },
         body: JSON.stringify({
-          sender: { name: "Healthy Bites", email: "prachirathore9736@gmail.com" },
+          sender: { name: "Healthy Bites", email: "prachirathore9376@gmail.com" },
           to: [{ email: toEmail.toLowerCase().trim() }],
           subject: "Account Verification OTP - Healthy Bites",
           htmlContent: `<h4>Dear User,</h4>
