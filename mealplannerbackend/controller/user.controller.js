@@ -581,40 +581,75 @@ function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+// function sendEmailWithOTP(toEmail, otp) {
+//   return new Promise((resolve, reject) => {
+//     let transporter = nodemailer.createTransport({
+//       host: 'smtp.gmail.com',
+//       port: 465,
+//       secure: true, 
+//       pool: true,  
+//       auth: {
+//         user: process.env.GMAIL_ID,
+//         pass: process.env.GMAIL_PASSWORD
+//       },
+//       tls: {
+//         rejectUnauthorized: false 
+//       }
+//     });
+
+//     let mailOptions = {
+//       from: `"Healthy Bites" <${process.env.GMAIL_ID}>`,
+//       to: toEmail.toLowerCase().trim(), 
+//       subject: 'Account Verification OTP - Healthy Bites',
+//       html: `<h4>Dear User,</h4>
+//             <p>Your production account verification code is:</p>
+//             <h2 style="color: #4CAF50; font-size: 28px; letter-spacing: 2px;">${otp}</h2>
+//             <p>This OTP is valid for 5 minutes.</p>
+//             <br />
+//             <b>Healthy Bites Team</b>`
+//     };
+
+//     transporter.sendMail(mailOptions, (error, info) => {
+//       if (error) {
+//         console.error("Nodemailer transmission crash details:", error.message);
+//         reject(error);
+//       } else {
+//         console.log("Email successfully pushed straight to inbox: " + info.response);
+//         resolve(true);
+//       }
+//     });
+//   });
+// }
+
 function sendEmailWithOTP(toEmail, otp) {
   return new Promise((resolve, reject) => {
     let transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true, 
-      pool: true,  
+      host: 'smtp-relay.brevo.com', // Brevo's dedicated cloud relay endpoint
+      port: 587,                   // Standard communication port supported by Brevo TLS
+      secure: false,                // false for port 587
       auth: {
-        user: process.env.GMAIL_ID,
-        pass: process.env.GMAIL_PASSWORD
-      },
-      tls: {
-        rejectUnauthorized: false 
+        user: process.env.GMAIL_ID,       // Will read your Brevo login from Render
+        pass: process.env.GMAIL_PASSWORD  // Will read your Brevo SMTP key from Render
       }
     });
 
     let mailOptions = {
-      from: `"Healthy Bites" <${process.env.GMAIL_ID}>`,
-      to: toEmail.toLowerCase().trim(), 
+      from: `"Healthy Bites" <prachirathore9376@gmail.com>`, // Your sender name identity
+      to: toEmail.toLowerCase().trim(),                       // Dynamic recipient
       subject: 'Account Verification OTP - Healthy Bites',
       html: `<h4>Dear User,</h4>
-            <p>Your production account verification code is:</p>
-            <h2 style="color: #4CAF50; font-size: 28px; letter-spacing: 2px;">${otp}</h2>
-            <p>This OTP is valid for 5 minutes.</p>
-            <br />
+            <p>Your account verification code is:</p>
+            <h2 style="color: #4CAF50; font-size: 28px;">${otp}</h2>
+            <p>This code is valid for 5 minutes.</p>
             <b>Healthy Bites Team</b>`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error("Nodemailer transmission crash details:", error.message);
+        console.error("Nodemailer transport error:", error.message);
         reject(error);
       } else {
-        console.log("Email successfully pushed straight to inbox: " + info.response);
+        console.log("Email successfully processed via Brevo relay: " + info.response);
         resolve(true);
       }
     });
