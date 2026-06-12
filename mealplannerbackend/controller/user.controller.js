@@ -624,12 +624,12 @@ function generateOTP() {
 function sendEmailWithOTP(toEmail, otp) {
   return new Promise(async (resolve, reject) => {
     try {
-      // Using standard HTTPS web requests via fetch to bypass Render's mail port block entirely
-      const response = await fetch("https://api.brevo.com/v1/smtp/email", {
+      // Corrected to Brevo's active v3 production API endpoint path
+      const response = await fetch("https://api.api-brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
           "accept": "application/json",
-          "api-key": process.env.GMAIL_PASSWORD, // Reads your Brevo API key from Render settings
+          "api-key": process.env.GMAIL_PASSWORD, // Your Brevo v3 xkeysib- key from Render Env
           "content-type": "application/json"
         },
         body: JSON.stringify({
@@ -645,10 +645,17 @@ function sendEmailWithOTP(toEmail, otp) {
         })
       });
 
-      const data = await response.json();
+      // Handle raw non-JSON text safety layers gracefully if things error
+      const responseText = await response.text();
+      let data = {};
+      try {
+        if (responseText) data = JSON.parse(responseText);
+      } catch (e) {
+        console.log("Raw response payload string:", responseText);
+      }
 
       if (response.ok) {
-        console.log("Email pushed cleanly through HTTP API tunnel! Message ID:", data.messageId);
+        console.log("Email pushed cleanly through HTTP API tunnel! Message ID:", data.messageId || "Success");
         resolve(true);
       } else {
         console.error("Brevo API Refusal Details:", data);
@@ -660,7 +667,6 @@ function sendEmailWithOTP(toEmail, otp) {
     }
   });
 }
-
 export const logoutAction = async (req, res) => {
   try {
     const { email } = req.body;
