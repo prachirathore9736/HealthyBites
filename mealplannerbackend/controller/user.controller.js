@@ -625,7 +625,8 @@ function sendEmailWithOTP(toEmail, otp) {
   return new Promise(async (resolve, reject) => {
     try {
       // Corrected to Brevo's active v3 production API endpoint path
-      const response = await fetch("https://api.api-brevo.com/v3/smtp/email", {
+      // Change the URL line inside your user.controller.js to match this exactly:
+        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
         method: "POST",
         headers: {
           "accept": "application/json",
