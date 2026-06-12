@@ -14,29 +14,59 @@ const AdminDashboard = () => {
     imageUrl: ''
   });
 
-  const API_URL = 'https://healthy-backend.onrender.com/admin/meals';
+  // const API_URL = 'https://healthy-backend.onrender.com/admin/meals';
+
+  // const getAuthHeaders = () => {
+  //   const token = localStorage.getItem('token');
+  //   return {
+  //     'Authorization': `Bearer ${token}`,
+  //     'Content-Type': 'application/json'
+  //   };
+  // };
+
+  // const fetchMeals = async () => {
+  //   try {
+  //     const response = await fetch(API_URL, {
+  //       headers: getAuthHeaders()
+  //     });
+
+  //     if (!response.ok) throw new Error('Failed to fetch meals');
+
+  //     const data = await response.json();
+  //     setMeals(data);
+  //   } catch (error) {
+  //     console.error('Error fetching meals:', error);
+  //     alert('Failed to load meals. Please try again.');
+  //   }
+  // };
+
+  // 1. Corrected to target your actual operational backend service URL
+  const API_URL = 'https://healthybitesbackend.onrender.com/admin/meals';
 
   const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
     return {
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
   };
 
   const fetchMeals = async () => {
     try {
+      // 2. Added credentials include to allow your HTTP-only cookie to authenticate automatically
       const response = await fetch(API_URL, {
-        headers: getAuthHeaders()
+        method: 'GET',
+        headers: getAuthHeaders(),
+        credentials: 'include' // <--- This passes your auth cookie securely to Render
       });
 
       if (!response.ok) throw new Error('Failed to fetch meals');
 
       const data = await response.json();
-      setMeals(data);
+      console.log("Meals received from backend raw array payload:", data);
+      
+      // Handle array extracting variation safely
+      setMeals(Array.isArray(data) ? data : data.meals || []);
     } catch (error) {
       console.error('Error fetching meals:', error);
-      alert('Failed to load meals. Please try again.');
     }
   };
 
@@ -52,11 +82,18 @@ const AdminDashboard = () => {
       const url = currentMeal ? `${API_URL}/${currentMeal._id}` : API_URL;
       const method = currentMeal ? 'PUT' : 'POST';
 
-      const response = await fetch(url, {
-        method,
-        headers: getAuthHeaders(),
-        body: JSON.stringify(formData)
-      });
+      // const response = await fetch(url, {
+      //   method,
+      //   headers: getAuthHeaders(),
+      //   body: JSON.stringify(formData)
+      // });
+      // Inside handleSubmit:
+const response = await fetch(url, {
+  method,
+  headers: getAuthHeaders(),
+  credentials: 'include', // <-- Add this
+  body: JSON.stringify(formData)
+});
 
       if (!response.ok) throw new Error('Operation failed');
 
@@ -102,10 +139,16 @@ const AdminDashboard = () => {
     if (!window.confirm('Are you sure you want to delete this meal?')) return;
 
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders()
-      });
+      // const response = await fetch(`${API_URL}/${id}`, {
+      //   method: 'DELETE',
+      //   headers: getAuthHeaders()
+      // });
+      // Inside handleDelete:
+const response = await fetch(`${API_URL}/${id}`, {
+  method: 'DELETE',
+  headers: getAuthHeaders(),
+  credentials: 'include' // <-- Add this
+});
 
       if (!response.ok) throw new Error('Delete failed');
 
