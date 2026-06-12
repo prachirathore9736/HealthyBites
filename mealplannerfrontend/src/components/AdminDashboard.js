@@ -14,8 +14,6 @@ const AdminDashboard = () => {
     imageUrl: ''
   });
 
-  // const API_URL = 'https://healthy-backend.onrender.com/admin/meals';
-
   // const getAuthHeaders = () => {
   //   const token = localStorage.getItem('token');
   //   return {
@@ -41,6 +39,7 @@ const AdminDashboard = () => {
   // };
 
   // 1. Corrected to target your actual operational backend service URL
+
   const API_URL = 'https://healthybitesbackend.onrender.com/admin/meals';
 
   const getAuthHeaders = () => {
