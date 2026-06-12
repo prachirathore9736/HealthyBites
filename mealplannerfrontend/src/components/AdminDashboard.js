@@ -14,32 +14,7 @@ const AdminDashboard = () => {
     imageUrl: ''
   });
 
-  // const getAuthHeaders = () => {
-  //   const token = localStorage.getItem('token');
-  //   return {
-  //     'Authorization': `Bearer ${token}`,
-  //     'Content-Type': 'application/json'
-  //   };
-  // };
-
-  // const fetchMeals = async () => {
-  //   try {
-  //     const response = await fetch(API_URL, {
-  //       headers: getAuthHeaders()
-  //     });
-
-  //     if (!response.ok) throw new Error('Failed to fetch meals');
-
-  //     const data = await response.json();
-  //     setMeals(data);
-  //   } catch (error) {
-  //     console.error('Error fetching meals:', error);
-  //     alert('Failed to load meals. Please try again.');
-  //   }
-  // };
-
-  // 1. Corrected to target your actual operational backend service URL
-
+  // TARGETING THE TRUE LIVE BACKEND DOMAIN
   const API_URL = 'https://healthybitesbackend.onrender.com/admin/meals';
 
   const getAuthHeaders = () => {
@@ -50,19 +25,17 @@ const AdminDashboard = () => {
 
   const fetchMeals = async () => {
     try {
-      // 2. Added credentials include to allow your HTTP-only cookie to authenticate automatically
       const response = await fetch(API_URL, {
         method: 'GET',
         headers: getAuthHeaders(),
-        credentials: 'include' // <--- This passes your auth cookie securely to Render
+        credentials: 'include' // Sends your cookie smoothly to Render
       });
 
       if (!response.ok) throw new Error('Failed to fetch meals');
 
       const data = await response.json();
-      console.log("Meals received from backend raw array payload:", data);
+      console.log("Meals array payload received:", data);
       
-      // Handle array extracting variation safely
       setMeals(Array.isArray(data) ? data : data.meals || []);
     } catch (error) {
       console.error('Error fetching meals:', error);
