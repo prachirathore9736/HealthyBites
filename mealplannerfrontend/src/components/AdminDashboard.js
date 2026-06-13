@@ -14,12 +14,13 @@ const AdminDashboard = () => {
     imageUrl: ''
   });
 
-  // TARGETING THE TRUE LIVE BACKEND DOMAIN
   const API_URL = 'https://healthybitesbackend.onrender.com/admin/meals';
 
-  const getAuthHeaders = () => {
+const getAuthHeaders = () => {
+    const token = localStorage.getItem('adminToken');
     return {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : ''
     };
   };
 
@@ -27,8 +28,7 @@ const AdminDashboard = () => {
     try {
       const response = await fetch(API_URL, {
         method: 'GET',
-        headers: getAuthHeaders(),
-        credentials: 'include' // Sends your cookie smoothly to Render
+        headers: getAuthHeaders() 
       });
 
       if (!response.ok) throw new Error('Failed to fetch meals');
@@ -47,37 +47,32 @@ const AdminDashboard = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  try {
+    const response = await fetch("https://healthybitesbackend.onrender.com/admin/login", { 
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password }) 
+    });
 
-    try {
-      const url = currentMeal ? `${API_URL}/${currentMeal._id}` : API_URL;
-      const method = currentMeal ? 'PUT' : 'POST';
+    const data = await response.json();
 
-      // const response = await fetch(url, {
-      //   method,
-      //   headers: getAuthHeaders(),
-      //   body: JSON.stringify(formData)
-      // });
-      // Inside handleSubmit:
-const response = await fetch(url, {
-  method,
-  headers: getAuthHeaders(),
-  credentials: 'include', // <-- Add this
-  body: JSON.stringify(formData)
-});
-
-      if (!response.ok) throw new Error('Operation failed');
-
-      alert(`Meal ${currentMeal ? 'updated' : 'added'} successfully!`);
-
-      resetForm();
-      fetchMeals();
-    } catch (error) {
-      console.error('Error saving meal:', error);
-      alert('Failed to save meal. Please try again.');
+    if (response.ok) {
+      localStorage.setItem('adminToken', data.token);
+      
+      alert("Admin Login Successful!");
+    } else {
+      alert(data.error || "Login failed");
     }
-  };
+  } catch (error) {
+    console.error("Login Error:", error);
+    alert("Something went wrong during sign in.");
+  }
+};
 
   const resetForm = () => {
     setFormData({
