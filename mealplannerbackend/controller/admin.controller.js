@@ -141,12 +141,18 @@ export const adminSignIn = async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    // generate jwt token
     const token = jwt.sign(
       { adminId: admin._id, role: 'admin' },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
+
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 24 * 60 * 60 * 1000 
+    });
 
     res.status(200).json({
       message: "Admin login successful",
