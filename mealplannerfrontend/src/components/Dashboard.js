@@ -69,77 +69,106 @@ const Dashboard = () => {
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        padding: '20px',
+        padding: '30px 20px',
         backgroundColor: '#f8f9fa',
         minHeight: '100vh',
-        gap: '40px',
+        gap: '30px',
         flexWrap: 'wrap'
       }}>
-        <div style={{ flex: '2 1 320px', maxWidth: '600px' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#2d3748', margin: '0 0 25px' }}>
+        {/* Left/Main Column */}
+        <div style={{ flex: '2 1 600px', maxWidth: '800px' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: 700, color: '#1a202c', margin: '0 0 25px' }}>
             Today • {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </h1>
 
+          {/* Calorie Stats Panel */}
           <div style={{
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            backgroundColor: '#fff', borderRadius: '12px', padding: '15px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '20px'
+            backgroundColor: '#fff', borderRadius: '16px', padding: '20px',
+            boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)', marginBottom: '30px'
           }}>
             <div>
-              <p style={{ margin: '0 0 5px', fontSize: '14px', color: '#718096' }}>Today's Nutrition</p>
-              <p style={{ margin: 0, fontSize: '20px', fontWeight: 600, color: '#2d3748' }}>
-                {nutrition.calories} Calories
+              <p style={{ margin: '0 0 4px', fontSize: '14px', color: '#718096', fontWeight: 500 }}>Today's Nutrition</p>
+              <p style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: '#2d3748' }}>
+                {nutrition.calories} <span style={{ fontSize: '16px', fontWeight: 500, color: '#718096' }}>Calories</span>
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', gap: '15px' }}>
               <MacroCircle percent={macros.proteinPercent} color="#48bb78" label="Protein" />
               <MacroCircle percent={macros.carbsPercent} color="#ed8936" label="Carbs" />
               <MacroCircle percent={macros.fatPercent} color="#f56565" label="Fat" />
             </div>
           </div>
 
-          {mealPlan && Object.keys(mealPlan).map(mealType => (
-            <div key={mealType} style={{ marginBottom: '30px' }}>
-              <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px'
+          {/* Refactored Big-Image Card Grid Layout */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '25px',
+            marginBottom: '40px'
+          }}>
+            {mealPlan && Object.keys(mealPlan).map(mealType => (
+              <div key={mealType} style={{
+                backgroundColor: '#fff', 
+                borderRadius: '16px', 
+                overflow: 'hidden',
+                boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
               }}>
-                <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#2d3748', margin: 0 }}>
-                  {mealType.charAt(0).toUpperCase() + mealType.slice(1)}
-                </h3>
-                <p style={{ fontSize: '16px', fontWeight: 600, color: '#2d3748', margin: 0 }}>
-                  {mealPlan?.[mealType]?.calories || 0} Calories
-                </p>
-              </div>
+                <div>
+                  {/* Big Image Banner Section */}
+                  <div style={{ position: 'relative', height: '180px', width: '100%' }}>
+                    <img 
+                      src={mealPlan?.[mealType]?.imageUrl}
+                      alt={mealType} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
+                    <div style={{
+                      position: 'absolute', top: '12px', left: '12px',
+                      backgroundColor: 'rgba(255,255,255,0.9)', padding: '4px 12px',
+                      borderRadius: '20px', fontSize: '12px', fontWeight: 700, color: '#2d3748',
+                      textTransform: 'uppercase', letterSpacing: '0.5px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                    }}>
+                      {mealType}
+                    </div>
+                  </div>
 
-              <div style={{
-                display: 'flex', alignItems: 'center', backgroundColor: '#fff', borderRadius: '12px',
-                padding: '15px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-              }}>
-                <img src={mealPlan?.[mealType]?.imageUrl}
-                  alt={mealType} style={{ width: '60px', height: '60px', borderRadius: '10px', marginRight: '15px', objectFit: 'cover' }} />
-                <div style={{ flex: 1 }}>
-                  <p style={{ margin: '0 0 5px', fontWeight: 600, fontSize: '16px', color: '#2d3748' }}>
-                    {mealPlan?.[mealType]?.name}
-                  </p>
-                  <p style={{ margin: '0 0 8px', fontSize: '14px', color: '#718096' }}>1 serving</p>
+                  {/* Text Description Box */}
+                  <div style={{ padding: '20px 20px 10px' }}>
+                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#2d3748', margin: '0 0 4px' }}>
+                      {mealPlan?.[mealType]?.name}
+                    </h3>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#718096' }}>1 serving • {mealPlan?.[mealType]?.calories || 0} Cals</p>
+                  </div>
+                </div>
+
+                <div style={{ padding: '0 20px 20px' }}>
                   <button style={{
-                    padding: 0, border: 'none', background: 'none',
-                    color: '#4299e1', fontWeight: 600, fontSize: '14px', cursor: 'pointer'
-                  }} onClick={() => { setSelectedMeal(mealPlan[mealType]); setShowRecipe(true); }}>
+                    width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0',
+                    backgroundColor: '#fff', color: '#3182ce', fontWeight: 600, fontSize: '14px', 
+                    cursor: 'pointer', transition: 'all 0.2s', textAlign: 'center'
+                  }} 
+                  onClick={() => { setSelectedMeal(mealPlan[mealType]); setShowRecipe(true); }}
+                  onMouseOver={e => { e.target.style.backgroundColor = '#ebf8ff'; e.target.style.borderColor = '#bee3f8'; }}
+                  onMouseOut={e => { e.target.style.backgroundColor = '#fff'; e.target.style.borderColor = '#e2e8f0'; }}
+                  >
                     View Recipe
                   </button>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
-          {/* generate new plan */}
+          {/* Action Button Container */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
             <button
               style={{
                 backgroundColor: '#48bb78', color: 'white', border: 'none',
-                borderRadius: '8px', padding: '12px 24px', fontWeight: 600,
-                fontSize: '16px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                borderRadius: '10px', padding: '14px 32px', fontWeight: 600,
+                fontSize: '16px', cursor: 'pointer', boxShadow: '0 4px 6px rgba(56,161,105,0.2)',
+                transition: 'background-color 0.2s'
               }}
               onClick={fetchMealPlan}
               onMouseOver={e => e.target.style.backgroundColor = '#38a169'}
@@ -150,11 +179,17 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Right Sidebar - Balanced Container height */}
         <div style={{
-          flex: '1 1 300px', maxWidth: '350px', backgroundColor: '#fff',
-          borderRadius: '12px', padding: '20px', boxShadow: '0 1px 4px rgba(0,0,0,0.1)'
+          flex: '1 1 300px', 
+          maxWidth: '350px', 
+          backgroundColor: '#fff',
+          borderRadius: '16px', 
+          padding: '24px', 
+          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',
+          alignSelf: 'flex-start' // Stops the container from stretching infinitely downwards
         }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#2d3748', marginBottom: '15px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#2d3748', marginBottom: '20px' }}>
             Nutrition Summary
           </h2>
 
@@ -163,19 +198,21 @@ const Dashboard = () => {
             { label: 'Carbs', value: nutrition.carbs, color: '#ed8936' },
             { label: 'Fat', value: nutrition.fat, color: '#f56565' }
           ].map((m, i) => (
-            <div key={i} style={{ marginBottom: '15px' }}>
+            <div key={i} style={{ marginBottom: '20px' }}>
               <div style={{
                 display: 'flex', justifyContent: 'space-between',
-                fontSize: '14px', fontWeight: '600', color: '#2d3748', marginBottom: '5px'
+                fontSize: '14px', fontWeight: '600', color: '#4a5568', marginBottom: '8px'
               }}>
-                <span>{m.label}</span><span>{m.value}g</span>
+                <span>{m.label}</span>
+                <span style={{ color: '#2d3748', fontWeight: 700 }}>{m.value}g</span>
               </div>
               <div style={{
                 height: '8px', width: '100%', backgroundColor: '#edf2f7',
                 borderRadius: '4px', overflow: 'hidden'
               }}>
                 <div style={{
-                  width: `${Math.min(100, m.value)}%`, height: '100%', backgroundColor: m.color
+                  width: `${Math.min(100, m.value)}%`, height: '100%', backgroundColor: m.color,
+                  borderRadius: '4px'
                 }}></div>
               </div>
             </div>
@@ -183,39 +220,41 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Recipe Modal */}
       {showRecipe && selectedMeal && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 1000
+          backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex',
+          justifyContent: 'center', alignItems: 'center', zIndex: 1000,
+          backdropFilter: 'blur(4px)'
         }}>
           <div style={{
-            backgroundColor: '#fff', borderRadius: '12px', padding: '25px',
+            backgroundColor: '#fff', borderRadius: '16px', padding: '30px',
             width: '90%', maxWidth: '500px', maxHeight: '80vh',
-            overflowY: 'auto', boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+            overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'
           }}>
             <div style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px'
             }}>
-              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 600, color: '#2d3748' }}>
-                {selectedMeal.name} Recipe
+              <h3 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: '#2d3748' }}>
+                {selectedMeal.name}
               </h3>
               <button onClick={() => setShowRecipe(false)}
-                style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#718096' }}>
+                style={{ background: 'none', border: 'none', fontSize: '28px', cursor: 'pointer', color: '#a0aec0', lineHeight: 1 }}>
                 ×
               </button>
             </div>
             <div>
-              <p style={{ fontWeight: 600, marginBottom: '10px', fontSize: '16px', color: '#2d3748' }}>Ingredients:</p>
-              <ul style={{ paddingLeft: '20px', marginBottom: '20px' }}>
+              <p style={{ fontWeight: 700, marginBottom: '10px', fontSize: '16px', color: '#2d3748' }}>Ingredients:</p>
+              <ul style={{ paddingLeft: '20px', marginBottom: '25px' }}>
                 {selectedMeal.ingredients?.map((ing, idx) => (
-                  <li key={idx} style={{ marginBottom: '8px', fontSize: '14px' }}>
-                    {ing.name} – {ing.quantity}
+                  <li key={idx} style={{ marginBottom: '8px', fontSize: '14px', color: '#4a5568' }}>
+                    {ing.name} – <span style={{ fontWeight: 600 }}>{ing.quantity}</span>
                   </li>
                 ))}
               </ul>
-              <p style={{ fontWeight: 600, marginBottom: '10px', fontSize: '16px', color: '#2d3748' }}>Recipe Instructions:</p>
-              <p style={{ fontSize: '14px', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+              <p style={{ fontWeight: 700, marginBottom: '10px', fontSize: '16px', color: '#2d3748' }}>Recipe Instructions:</p>
+              <p style={{ fontSize: '14px', lineHeight: '1.7', whiteSpace: 'pre-wrap', color: '#4a5568' }}>
                 {selectedMeal.recipe || 'No recipe available.'}
               </p>
             </div>
@@ -223,6 +262,8 @@ const Dashboard = () => {
         </div>
       )}
     </div>
+
+    {/* Footer */}
     <footer style={{
       backgroundColor: '#1a252f',
       color: '#7f8c8d',
@@ -240,7 +281,6 @@ const Dashboard = () => {
           <h4 style={{ color: 'white', margin: '0 0 15px' }}>Healthy Bites</h4>
           <p>Your personal meal planning assistant for healthier eating habits.</p>
         </div>
-
         <div>
           <h4 style={{ color: 'white', margin: '0 0 15px' }}>Resources</h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -250,7 +290,6 @@ const Dashboard = () => {
             <li style={{ marginBottom: '8px' }}>Nutrition Guide</li>
           </ul>
         </div>
-
         <div>
           <h4 style={{ color: 'white', margin: '0 0 15px' }}>Company</h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -260,7 +299,6 @@ const Dashboard = () => {
             <li style={{ marginBottom: '8px' }}>Press</li>
           </ul>
         </div>
-
         <div>
           <h4 style={{ color: 'white', margin: '0 0 15px' }}>Legal</h4>
           <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -270,7 +308,6 @@ const Dashboard = () => {
           </ul>
         </div>
       </div>
-
       <div style={{
         maxWidth: '1200px',
         margin: '40px auto 0',
