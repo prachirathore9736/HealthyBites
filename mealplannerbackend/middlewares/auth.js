@@ -80,13 +80,18 @@ export const verifyAdmin = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    console.log("Decoded Admin Token Payload looks like this:", decoded);
+
     if (decoded.role !== 'admin') {
       return res.status(403).json({ error: "Admin access required" });
     }
 
-    const admin = await Admin.findById(decoded.adminId || decoded.userId);
+    const targetId = decoded.adminId || decoded.userId || decoded.id;
+    
+    const admin = await Admin.findById(targetId);
     if (!admin) {
-      return res.status(404).json({ error: "Admin not found" });
+      return res.status(404).json({ error: "Admin account could not be found in database collection" });
     }
 
     req.admin = admin;
