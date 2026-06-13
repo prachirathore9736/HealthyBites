@@ -56,7 +56,11 @@ const handleSubmit = async (e) => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ email, password }) 
+      // Fix the payload line to match your state configuration:
+body: JSON.stringify({ 
+  email: formData.email, 
+  password: formData.password 
+}) 
     });
 
     const data = await response.json();
