@@ -69,7 +69,12 @@ export const checkProfileComplete = async (req, res, next) => {
 
 export const verifyAdmin = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    let token = req.cookies.jwt;
+
+    if (!token && req.headers.authorization?.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
     if (!token) {
       return res.status(401).json({ error: "Authorization token required" });
     }
@@ -79,7 +84,7 @@ export const verifyAdmin = async (req, res, next) => {
       return res.status(403).json({ error: "Admin access required" });
     }
 
-    const admin = await Admin.findById(decoded.adminId);
+    const admin = await Admin.findById(decoded.adminId || decoded.userId);
     if (!admin) {
       return res.status(404).json({ error: "Admin not found" });
     }
